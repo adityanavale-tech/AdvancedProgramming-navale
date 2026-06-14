@@ -20,26 +20,33 @@ public class Telem {
     public Follower follower;
 
     DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "motor");
-    double rpm = Math.abs(motor.getVelocity()*2.14);
+    public double rpm;
 
 
+    public Telem(DcMotorEx motor, Telemetry telemetry, Follower follower) {
+        this.motor = motor;
+        this.telemetry = telemetry;
+        this.follower = follower;
+    }
+
+    public double rpm() {
+        return Math.abs(motor.getVelocity()*2.14);
+    }
 
     public void Outtake(){
+
         telemetry.addData("RRM: ", rpm);
         telemetry.addData("Motor Power: ", motor.getPower());
         telemetry.addData("Current: ",motor.getCurrent(CurrentUnit.AMPS));
-        telemetry.update();
     }
     public void Pose(){
         telemetry.addData("Pose (x,y): ", follower.getPose().getAsFTCStandardCoordinates());
         telemetry.addData("Robot Velocity: ",follower.getVelocity().getMagnitude());
         telemetry.addData("Heading: ",follower.getTotalHeading());
 
-        telemetry.update();
-
     }
-    public static void TeleHelper(Gamepad gamepad, Telemetry telemetry, double rpm, Follower follower){
-        if(gamepad1.rightTriggerWasPressed()){
+    public static void TeleHelper(Gamepad gamepad, Telemetry telemetry, Follower follower, double rpm){
+        if(gamepad.rightTriggerWasPressed()){
             telemetry.addLine("Right Trigger Pressed");
             telemetry.addData("RPM is at: ", rpm);
 
